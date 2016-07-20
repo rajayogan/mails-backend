@@ -1,6 +1,7 @@
 var User = require('../model/user');
 var config = require('../config/database');
 var jwt = require('jwt-simple');
+var email   = require("emailjs/email");
 
 var functions = {
     authenticate: function(req, res) {
@@ -59,6 +60,28 @@ var functions = {
         else {
             return res.json({success:false, msg: 'No header'});
         }
+    },
+    sendMail: function(req, res) {
+        
+var server  = email.server.connect({
+   user:    "<your userid here>", 
+   password:"<your password here>", 
+   host:    "<smtp server>", 
+   ssl:     true
+});
+
+// send the message and get a callback with an error or details of the message that was sent
+server.send({
+   text:    "Welcome to my demo app", 
+   from:    "<your userid here>", 
+   to:      req.body.name,
+   subject: "Welcome mail"
+}, function(err, message) { 
+    if(err)
+    console.log(err);
+    else
+    return res.json({success: true, msg: 'sent'});
+});
     }
     
     
